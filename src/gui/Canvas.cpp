@@ -20,22 +20,11 @@
  */
 
 
-#include <QDebug>
-#include <QPainter>
-#include <QResizeEvent>
-#include <QtPrintSupport/QPrinter>
-#include <QtPrintSupport/QPrintEngine>
-#include <QtPrintSupport/QPrintDialog>
 #include "Canvas.h"
 
-Canvas::Canvas( const QPixmap& pixmap,
-                QGraphicsItem* parent, QGraphicsScene* scene ) :
-    QObject(), QGraphicsPixmapItem ( pixmap,parent )
+Canvas::Canvas( )
 {
-    Q_UNUSED(scene);
 
-    setTransformationMode(Qt::SmoothTransformation);
-    setFlags(QGraphicsItem::ItemIsMovable);
 }
 
 //destroys the cairo object if it exists
@@ -43,96 +32,55 @@ Canvas::~Canvas()
 {
 }
 
-bool Canvas::saveCanvas(const QString& fileName, const char* format, unsigned quality)
+bool Canvas::saveCanvas()
 {
-    return pixmap().save(fileName,format,quality);
+  return true;
 }
 
 // This function creates the printer object to capture the filename
 // and then print the Cairo Canvas on the pdf page that will
 // have the same size
-bool Canvas::saveCanvasPDF(const QString& fileName)
+bool Canvas::saveCanvasPDF()
 {
-    return pixmap().save(fileName);
+  return true;
 }
 
 // This function launches a printing dialog to select the printing device
 // and then send the canvas to the printer to be printed out
 bool Canvas::print()
 {
-    QPrinter printer;
-    printer.setPageSize(QPrinter::A4);
-    printer.setResolution(150);
-    printer.setFullPage(true);
-    QPrintDialog print(&printer);
-    if(print.exec()== QPrintDialog::Accepted)
-    {
-        QPainter painter;
-        painter.begin(&printer);
-        painter.drawPixmap(0, 0, pixmap());
-        painter.end();
         return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
-QRectF Canvas::boundingRect() const
+void Canvas::boundingRect() const
 {
-    return QRectF ( QPointF ( 0,0 ),QSizeF(pixmap().width(),pixmap().height()));
+  return;
 }
 
-void Canvas::paint ( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+void Canvas::paint ( )
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-    painter->drawPixmap ( boundingRect().toRect(), pixmap() );
-    //QGraphicsPixmapItem::paint(painter, option, widget);
+
 }
 
-void Canvas::setPixmap(const QPixmap& pixmap)
+void Canvas::setPixmap()
 {
-    QGraphicsPixmapItem::setPixmap(pixmap);
+
 }
 
 void Canvas::rotateLeftCentered()
 {
-    QTransform temp = transform();
-    resetTransform();
-    //     translate ( pixmap().width() /2,pixmap().height() /2 );
-    //     rotate ( -10 );
-    //     translate ( - ( pixmap().width() /2 ),- ( pixmap().height() /2 ) );
-    setTransform(temp,true);
 }
 
 void Canvas::rotateRightCentered()
 {
-    QTransform temp = transform();
-    resetTransform();
-    //     translate ( pixmap().width() / 2, pixmap().height() /2 );
-    //     rotate ( 10 );
-    //     translate ( - ( pixmap().width() / 2 ), - ( pixmap().height() / 2 ) );
-    setTransform(temp,true);
 }
 
 void Canvas::invert()
 {
-    QTransform temp = transform();
-    resetTransform();
-    //     translate ( pixmap().width() /2,pixmap().height() /2 );
-    //     scale ( 1, -1 );
-    //     translate ( - ( pixmap().width() /2 ),- ( pixmap().height() /2 ) );
-    setTransform(temp,true);
 }
 
 void Canvas::setSize ( unsigned sizeW, unsigned sizeH )
 {
-    prepareGeometryChange();
-    QPixmap scaledP = pixmap().scaled(sizeW,sizeH,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    setPixmap(scaledP);
-    update();
 }
 
 void Canvas::setVisible ( bool status)

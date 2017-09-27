@@ -21,23 +21,21 @@
 
 #ifndef CANVAS_H
 #define CANVAS_H
-#include <QGraphicsPixmapItem>
-#include <QByteArray>
 
-class Canvas: public QObject, public QGraphicsPixmapItem
+class Canvas
 {
-    Q_OBJECT
+
 
 public:
 
     //constructor, parent object passed as parameter
-    Canvas(const QPixmap& pixmap, QGraphicsItem* parent = 0, QGraphicsScene* scene = 0);
+  Canvas();
     
     //save the canvas in a file
-    bool saveCanvas(const QString & fileName, const char * format = 0, unsigned quality = -1);
+  bool saveCanvas();
     
     //save the canvas in a pdf
-    bool saveCanvasPDF(const QString& fileName);
+  bool saveCanvasPDF();
     
     //prin the canvas
     bool print();
@@ -45,17 +43,17 @@ public:
     //destructor
     ~Canvas();
 
-    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+    virtual void paint();
     
-    virtual void setPixmap(const QPixmap &pixmap);
+    virtual void setPixmap();
 
     void setSize(unsigned _sizeW,unsigned _sizeH);
 
 protected:
 
-    virtual QRectF boundingRect() const;
+    virtual void boundingRect() const;
     
-public slots:
+public:
 
     void rotateRightCentered();
     
