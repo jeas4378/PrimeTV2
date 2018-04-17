@@ -17,14 +17,14 @@ MACRO(INITIALISE_PROJECT)
 
     # Reduce the number of warnings
     # Remove "warning: multi-character character constant"
-    OPTION(TREAT_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
+    OPTION(TREAT_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 
     IF(WIN32)
         #TODO
     ELSE()
-#        IF(TREAT_WARNINGS_AS_ERRORS)
-#            SET(WARNING_ERROR "-Werror")
-#        ENDIF(TREAT_WARNINGS_AS_ERRORS)
+        IF(TREAT_WARNINGS_AS_ERRORS)
+            SET(WARNING_ERROR "-Werror")
+        ENDIF(TREAT_WARNINGS_AS_ERRORS)
         SET(DISABLED_WARNINGS "-Wno-float-equal -Wno-shadow -Wno-unreachable-code -Wno-switch-enum -Wno-unused-function -Wno-switch-default")
         SET(DISABLED_WARNINGS_DEBUG "-Wno-float-equal -Wno-shadow -Wno-unreachable-code -Wno-switch-enum -Wno-unused-function -Wno-switch-default")
         SET(EXTRA_WARNINGS_C "-Wall -Wunused-variable -Wextra  -Wformat-nonliteral -Wformat -Wreturn-type -Wempty-body -Wdeprecated -Wdisabled-optimization -Winline -Wpacked -Wuninitialized -Wcast-align -Wcast-qual -Wswitch -Wsign-compare -pedantic-errors")
