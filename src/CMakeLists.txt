@@ -176,6 +176,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake" )
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${PROJECT_SOURCE_DIR}/cmake" )
 
+#find qt libraries
+use_qt5lib(Qt5Widgets)
+use_qt5lib(Qt5Core)
+use_qt5lib(Qt5Gui)
+use_qt5lib(Qt5PrintSupport)
 
 #find boost    
 set(Boost_USE_STATIC_LIBS ON)
@@ -207,6 +212,16 @@ flex_target(MyScanner "${PROJECT_SOURCE_DIR}/src/parser/NHX.l"
                       COMPILE_FLAGS "-Pyytree_" )
 add_flex_bison_dependency(MyScanner MyParser)
 
+#QT5 DIRECTIVES
+set(FORMS
+          "${PROJECT_SOURCE_DIR}/resources/ui/primetv.ui"
+          "${PROJECT_SOURCE_DIR}/resources/ui/parameters.ui")
+          
+set(RESOURCES "${PROJECT_SOURCE_DIR}/resources/application.qrc")
+
+qt5_wrap_ui(QT_FORMS ${FORMS})
+qt5_add_resources(QT_RESOURCES ${RESOURCES})
+
 #set up tree parsers
 set(PARSER_SOURCES "${SRC_PARSER}"
                    "${BISON_MyParser_OUTPUTS}" 
@@ -216,17 +231,18 @@ foreach(i ${PARSER_SOURCES})
  set_source_files_properties(${i} PROPERTIES LANGUAGE C)
 endforeach(i)
 
-add_library(primetvlib STATIC ${PARSER_SOURCES} ${SOURCES} ${INCLUDES} )
+add_library(primetvlib STATIC ${PARSER_SOURCES} ${SOURCES} ${INCLUDES} ${QT_FORMS})
 
 if(WIN32)
-  add_executable(${PROJECT_NAME} WIN32 primetv.cpp )
+  add_executable(${PROJECT_NAME} WIN32 primetv.cpp ${QT_RESOURCES})
 elseif(APPLE)
-  add_executable(${PROJECT_NAME} primetv.cpp ) 
+  add_executable(${PROJECT_NAME} primetv.cpp ${QT_RESOURCES}) 
 else()
-  add_executable(${PROJECT_NAME} primetv.cpp )
+  add_executable(${PROJECT_NAME} primetv.cpp ${QT_RESOURCES})
 endif()
 
-target_link_libraries(${PROJECT_NAME} primetvlib ${CAIRO_LIBRARIES} ${Boost_LIBRARIES} )
+qt5_use_modules(${PROJECT_NAME} Core Gui Widgets WebKitWidgets LinguistTools) 
+target_link_libraries(${PROJECT_NAME} primetvlib ${CAIRO_LIBRARIES} ${Boost_LIBRARIES})
 
 if(APPLE)
   set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_SEARCH_END_STATIC ON)
@@ -234,8 +250,8 @@ endif(APPLE)
 
 ### UNIT TESTS ################################################################
 
-#enable_testing()
-#add_subdirectory(test)
+enable_testing()
+add_subdirectory(test)
 
 ######################################INSTALLATION##############################
 
@@ -259,7 +275,7 @@ if(UNIX AND NOT APPLE)
     # PACKAGING OPTIONS: DEB
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jose Fernandez <jose.fernandez.navarro@scilifelab.se>")
     set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${TARGET_ARCH})
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6, libboost-dev, libcairo-dev, flex, bison")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6, libboost-dev, libcairo-dev, libqt5-dev, flex, bison")
 
     if(32BIT_MODE)
         set(CPACK_SYSTEM_NAME "${CPACK_SYSTEM_NAME}32")

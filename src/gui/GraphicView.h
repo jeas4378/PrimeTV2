@@ -22,51 +22,55 @@
 #ifndef GRAPHICVIEW_H
 #define GRAPHICVIEW_H
 
+#include <QGraphicsView>
 
 
-
-class GraphicView
+class GraphicView : public QGraphicsView
 {
 
+    Q_OBJECT
 
 public:
 
-  GraphicView();
+    GraphicView( QWidget* parent = 0);
 
     virtual ~GraphicView();
     
 protected:
 
-    virtual void mousePressEvent();
+    virtual void mousePressEvent(QMouseEvent* event);
 
-    virtual void mouseMoveEvent();
+    virtual void mouseMoveEvent(QMouseEvent* event);
 
-    virtual void mouseReleaseEvent();
+    virtual void mouseReleaseEvent(QMouseEvent* event);
 
-    virtual void wheelEvent();
+    virtual void wheelEvent(QWheelEvent* event);
     
-    virtual void resizeEvent();
+    virtual void resizeEvent(QResizeEvent* event);
     
+    //Holds the current centerpoint for the view, used for panning and zooming
+    QPointF CurrentCenterPoint;
+
     //From panning the view
-    int LastPanPoint=0;
+    QPoint LastPanPoint;
 
     //Set the current centerpoint in the
-    void SetCenter();
-    int GetCenter() { return 0; }
+    void SetCenter(const QPointF& centerPoint);
+    QPointF GetCenter() { return CurrentCenterPoint; }
     
-public:
+public slots:
 
-    void zoomIn() {  }
+    void zoomIn() { scale(1.2, 1.2); }
     
-    void zoomOut() { }
+    void zoomOut() { scale(1 / 1.2, 1 / 1.2); }
     
-    void rotateLeft() { }
+    void rotateLeft() { rotate(-10); }
 
-    void rotateRight() { }
+    void rotateRight() { rotate(10); }
     
-    void invert() { }
+    void invert() { scale(1, -1); }
 
-    void setBackground();
+    void setBackground(QColor color);
 
 };
 

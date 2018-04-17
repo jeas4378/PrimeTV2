@@ -27,25 +27,39 @@
 
 #ifndef WINDOWS_H
 #define WINDOWS_H
-// #include "ui_primetv.h" 
-//#include "ui_parameters.h"
+
+#include <QFileDialog>
+#include <QTemporaryFile>
+#include <QMainWindow>
+
+#include "ui_primetv.h"
+#include "ui_parameters.h"
 
 class ConfigFile;
 class Mainops;
 class Canvas;
+class QAction;
+class QActionGroup;
+class QLabel;
+class QMenu;
 class Parameters;
+class QWidget;
+class QGraphicsScene;
+class QString;
 
-class MainWindow 
+class MainWindow : public QMainWindow, public Ui_MainWindow, public Ui_Parameters
 {
+
+    Q_OBJECT
 
 public:
 
     // constructor we only need the parameters object and the parent if there is any
-  explicit MainWindow();
+    explicit MainWindow(Parameters *p, Mainops *m, QMainWindow *parent = 0);
     //destructor
     virtual ~MainWindow();
     
- private:
+private slots:
     
     // launches an open file dialog to select and load the guest tree
     void loadGuest();
@@ -93,7 +107,7 @@ public:
 private:
     
     // creates an open file dialog and returns the file chosen
-    void openFile();
+    QString openFile(QString header);
     
     // paint the current tree on the canvas
     void paintTree();
@@ -106,9 +120,19 @@ private:
     void loadParameters(Parameters *parameters);
     
     // overloaded close Event function to handle the exit
-    void closeEvent();
+    void closeEvent(QCloseEvent *e);
     
+    QWidget *params; //parameters panel
+    Canvas *canvas; //pixmap where tree is loaded
+    QGraphicsScene *scene; //main scene
     
+    QString lastVisitedDir;
+    Mainops *ops; // main operations
+    Parameters *parameters;
+    QString reconciledtree;
+    QString speciestree;
+    QString genetree;
+    QString mapfile;
     bool guestTree;
     bool hostTree;
     bool isPainted;

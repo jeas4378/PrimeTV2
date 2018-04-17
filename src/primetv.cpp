@@ -39,7 +39,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
-
+#include <QApplication>
 
 #include "gui/Windows.h"
 
@@ -484,6 +484,11 @@ main (int ac, char *av[])
 
         if ((bool)(parameters->UI)) //We start the User Interface
         {
+            QApplication app(ac, av);
+            MainWindow *appWindow = new MainWindow(parameters,mainops);
+            appWindow->show();
+            return app.exec();
+            delete appWindow;
         }
         else // We start the script version
         {
