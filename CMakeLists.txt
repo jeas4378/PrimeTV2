@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 2.8.9)
 enable_language(CXX C)
 
 set(APPLICATION_NAME "PrimeTV : Phylogenetic trees viewer")
+set(Boost_NO_BOOST_CMAKE ON)
 
 #Cpack stuff
 set(LICENSE_FILE "LICENSE")
